@@ -1,16 +1,16 @@
 package nbradham.blackjack;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
 
 final class Manager {
 
-	private static final ArrayList<Card> DECK = new ArrayList<>(52);
+	private static final Card[] DECK = new Card[52];
 	static {
-		for (Suit s : Suit.values())
-			for (Rank r : Rank.values())
-				DECK.add(new Card(s, r));
+		byte i = -1;
+		for (Rank r : Rank.values())
+			for (Suit s : Suit.values())
+				DECK[++i] = new Card(s, r);
 	}
 
 	private static enum Rank {
@@ -24,7 +24,7 @@ final class Manager {
 
 		@Override
 		public final String toString() {
-			return this == Ace || ordinal() > N10.ordinal() ? super.toString() : String.valueOf(value);
+			return ordinal() > N10.ordinal() || this == Ace ? super.toString() : String.valueOf(value);
 		}
 	}
 
@@ -34,10 +34,10 @@ final class Manager {
 
 	public static final void main(String[] args) {
 		Stack<Card> shoe = new Stack<>();
-		for (byte i = 0; i != 4; ++i) {
-			Collections.shuffle(DECK);
-			shoe.addAll(DECK);
-		}
+		for (byte i = 0; i != 4; ++i)
+			for (Card c : DECK)
+				shoe.push(c);
+		Collections.shuffle(shoe);
 		System.out.println(shoe);
 	}
 
