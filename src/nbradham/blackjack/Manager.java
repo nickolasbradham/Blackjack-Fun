@@ -5,12 +5,8 @@ import java.util.Stack;
 
 final class Manager {
 
-	private static final Card[] DECK = new Card[52];
-	static {
-		byte i = -1;
-		for (Rank r : Rank.values())
-			for (Suit s : Suit.values())
-				DECK[++i] = new Card(s, r);
+	private static enum Suit {
+		Clubs, Diamonds, Hearts, Spades
 	}
 
 	private static enum Rank {
@@ -28,8 +24,12 @@ final class Manager {
 		}
 	}
 
-	private static enum Suit {
-		Clubs, Diamonds, Hearts, Spades
+	private static final Card[] DECK = new Card[Rank.values().length * Suit.values().length];
+	static {
+		byte i = -1;
+		for (Rank r : Rank.values())
+			for (Suit s : Suit.values())
+				DECK[++i] = new Card(s, r);
 	}
 
 	public static final void main(String[] args) {
