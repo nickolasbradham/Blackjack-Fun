@@ -7,9 +7,9 @@ final record Card(Suit suit, Rank rank) {
 	}
 
 	public static enum Rank {
-		Ace(1), N2(2), N3(3), N4(4), N5(5), N6(6), N7(7), N8(8), N9(9), N10(10), Jack(10), Queen(10), King(10);
+		Ace(11), N2(2), N3(3), N4(4), N5(5), N6(6), N7(7), N8(8), N9(9), N10(10), Jack(10), Queen(10), King(10);
 
-		private final int value;
+		final int value;
 
 		private Rank(int cardVal) {
 			value = cardVal;

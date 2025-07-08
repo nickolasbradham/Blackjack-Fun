@@ -3,7 +3,7 @@ package nbradham.blackjack;
 final class PlacedCard {
 
 	private final Card card;
-	private boolean revealed;
+	boolean revealed;
 
 	PlacedCard(Card setCard) {
 		this(setCard, true);
@@ -21,9 +21,5 @@ final class PlacedCard {
 
 	final Card getCard() {
 		return card;
-	}
-
-	final boolean isRevealed() {
-		return revealed;
 	}
 }

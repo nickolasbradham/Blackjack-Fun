@@ -3,7 +3,6 @@ package nbradham.blackjack;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashSet;
 
 import nbradham.blackjack.Game.Action;
@@ -20,10 +19,10 @@ final class TerminalPlayer implements Player {
 	}
 
 	@Override
-	public final byte getBet() {
+	public final int getBet() {
 		byte bet = 0;
 		do {
-			System.out.print("Enter bet: ");
+			System.out.print("Enter bet (x10): ");
 			try {
 				bet = Byte.parseByte(in.readLine());
 				if (bet < 1)
@@ -32,7 +31,7 @@ final class TerminalPlayer implements Player {
 				System.out.println("Could not parse bet.");
 			}
 		} while (bet == 0);
-		return bet;
+		return bet * 10;
 	}
 
 	@Override
@@ -50,8 +49,7 @@ final class TerminalPlayer implements Player {
 			}
 		}
 		sb.setLength(sb.length() - 2);
-		System.out.printf("Dealer: %s%nPlayer: %s%n%s", Arrays.toString(game.getDealerHand()),
-				Arrays.toString(game.getPlayerHand()), sb.append("\nSelect action: "));
+		System.out.print(sb.append("\nSelect action: "));
 		while (true)
 			try {
 				switch (in.readLine().toLowerCase()) {
