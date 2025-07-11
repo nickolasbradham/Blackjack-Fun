@@ -2,11 +2,15 @@ package nbradham.blackjack;
 
 import nbradham.blackjack.Game.Action;
 
-sealed interface Player permits TerminalPlayer {
+abstract class Player {
 
-	int getBet();
+	int credits = 10;
 
-	void setGame(Game game);
+	abstract int getBet();
 
-	Action getAction(Action[] options);
+	abstract void setGame(Game game);
+
+	abstract Action getAction(Action[] options);
+
+	abstract void onEnd(GameResult gameResult);
 }
