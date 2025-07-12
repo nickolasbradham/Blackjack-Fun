@@ -56,35 +56,49 @@ final class Game {
 			validActs.add(Action.STAND);
 			validActs.add(Action.SURRENDER);
 			Action act = getValidPlayerAct();
-			validActs.remove(Action.DOUBLE);
 			validActs.remove(Action.SPLIT);
 			validActs.remove(Action.SURRENDER);
-			for (byte i = 0; i < playerHands.size(); ++i) {
-				final ArrayList<PlacedCard> hand = playerHands.get(i);
-				switch (act) {
-				case DOUBLE:
-					doubleBet();
-					dealCard(hand);
-					return dealerTurn(hand);
-				case HIT:
-					dealCard(hand);
-					if (getTotal(hand) >= TARGET)
-						return dealerTurn(hand);
+			if (act == Action.SPLIT) {
+				doubleBet();
+				final ArrayList<PlacedCard> secondHand = new ArrayList<>();
+				playerHands.add(secondHand);
+				secondHand.add(firstHand.remove(1));
+			} else
+				validActs.remove(Action.DOUBLE);
+			for (ArrayList<PlacedCard> hand : playerHands) {
+				dealCard(hand);
+				boolean same = true;
+				while (same) {
+					switch (act) {
+					case DOUBLE:
+						doubleBet();
+						dealCard(hand);
+						same = false;
+						continue;
+					case HIT:
+						dealCard(hand);
+						if (getTotal(hand) >= TARGET) {
+							same = false;
+							continue;
+						}
+						act = getValidPlayerAct();
+						break;
+					case STAND:
+						same = false;
+						continue;
+					case SURRENDER:
+						return new GameResult(State.SURRENDER, bet / 2);
+					}
 					act = getValidPlayerAct();
-					break;
-				case SPLIT:
-					doubleBet();
-					final ArrayList<PlacedCard> secondHand = new ArrayList<>();
-					playerHands.add(secondHand);
-					secondHand.add(firstHand.remove(1));
-					// TODO Implement.
-					break;
-				case STAND:
-					return dealerTurn(hand);
-				case SURRENDER:
-					return new GameResult(State.SURRENDER, bet / 2);
 				}
 			}
+			revealDeal();
+			byte dealTot;
+			while ((dealTot = getDealHandTot()) < 17)
+				dealDeal();
+			byte pay = 0;
+//			return dealTot > TARGET ? new GameResult(State.WIN, bet * 2)
+//					: dealTot > playTot ? new GameResult(State.LOSE, 0) : new GameResult(State.TIE, bet);
 			return null;
 		}
 	}
@@ -124,18 +138,6 @@ final class Game {
 		while (!validActs.contains(act = player.getAction(availableActs)))
 			;
 		return act;
-	}
-
-	private final GameResult dealerTurn(ArrayList<PlacedCard> hand) {
-		byte playTot = getTotal(hand);
-		if (playTot > TARGET)
-			return new GameResult(State.BUST, 0);
-		revealDeal();
-		byte dealTot;
-		while ((dealTot = getDealHandTot()) < 16 || dealTot < playTot)
-			dealDeal();
-		return dealTot > TARGET ? new GameResult(State.WIN, bet * 2)
-				: dealTot > playTot ? new GameResult(State.LOSE, 0) : new GameResult(State.TIE, bet);
 	}
 
 	private final void revealDeal() {
